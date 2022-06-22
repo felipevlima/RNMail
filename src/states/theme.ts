@@ -13,4 +13,4 @@ export const activeThemeAtom = atom<Theme>(get => {
   }
 })
 
-export default activeThemeAtom
+export default activeThemeId

@@ -3,6 +3,7 @@ import HeaderBar from '@/components/header-bar'
 import FeatherIcon from '@/components/icon'
 import MoveNoteSheet from '@/components/move-note-sheet'
 import NoteList from '@/components/note-list'
+import ThemePicker from '@/components/theme-picker'
 import useStickHeader from '@/hooks/use-sticky-header'
 import { HomeDrawerParamList, RootStackParamList } from '@/navs'
 import { DrawerScreenProps } from '@react-navigation/drawer'
@@ -13,6 +14,7 @@ import React, { useCallback, useRef, useState } from 'react'
 type Props = CompositeScreenProps<DrawerScreenProps<HomeDrawerParamList, 'Main'>, NativeStackScreenProps<RootStackParamList>>
 
 export default function MainScreen({ navigation }: Props) {
+  const refThemePicker = useRef<ThemePicker>(null)
   const refMoveNoteSheet = useRef<MoveNoteSheet>(null)
   const { handleNoteListLayout, handleScroll, headerBarHeight, headerBarStyle } = useStickHeader()
   const [concealNoteListItem, setConcealNoteListItem] = useState<(() => void) | null>(null)
@@ -20,6 +22,13 @@ export default function MainScreen({ navigation }: Props) {
   const handleSidebarToggle = useCallback(() => {
     navigation.toggleDrawer()
   }, [])
+
+  const handleMenuToggle = useCallback(() => {
+    const { current: menu } = refThemePicker
+    if (menu) {
+      menu.show()
+    }
+  },[])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const hanldeNoteListItemPress = useCallback((noteId: string) => {
@@ -49,11 +58,12 @@ export default function MainScreen({ navigation }: Props) {
         <Box flex={1} alignItems="center">
           <Text fontWeight={"bold"}>All Notes</Text>
         </Box>
-        <TouchableOpacity m="xs" p="xs" rippleBorderless>
+        <TouchableOpacity m="xs" p="xs" rippleBorderless onPress={handleMenuToggle}>
           <FeatherIcon name='more-vertical' size={22}/>
         </TouchableOpacity>
       </HeaderBar>
       <MoveNoteSheet ref={refMoveNoteSheet} onClose={handleMoveSheetClose} />
+      <ThemePicker ref={refThemePicker} />
     </Container>
   )
 }
